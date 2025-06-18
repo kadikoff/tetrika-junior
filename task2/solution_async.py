@@ -20,7 +20,7 @@ async def fetch_page(
 async def process_page(
         session: aiohttp.ClientSession,
         url: str,
-        animals_count_data: dict[str, int],
+        animals_count_data: defaultdict[str, int],
 ) -> Optional[str]:
     """Обработка полученной страницы
 
@@ -48,7 +48,7 @@ async def process_page(
 
 
 async def process_animals_data(
-        common_div: BeautifulSoup, animals_count_data: dict[str, int]
+        common_div: BeautifulSoup, animals_count_data: defaultdict[str, int]
 ) -> None:
     """Извлечение, обработка и подсчёт кол-ва животных с занесением информации
     во временное хранилище - словарь animals_count_data;
