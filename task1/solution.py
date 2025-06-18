@@ -17,7 +17,10 @@ def strict(func):
     def wrapper(*args, **kwargs):
         signature = inspect.signature(func)  # (a: int, b: int) -> int
         bound_args = signature.bind(*args, **kwargs)  # <BoundArguments (a=1, b=2)>
-        annotations: dict[str, Type[Any]] = func.__annotations__  # {'a': <class 'int'>, 'b': <class 'int'>, 'return': <class 'int'>}
+        # Ввиду того, что аннотации могут поменять на ходу (func.__annotations__ = ...),
+        # получаем теперь их из wrapper. Если аннотации не менялись, тогда получаем
+        # оригинальные из самой функции func.
+        annotations = wrapper.__annotations__ if hasattr(wrapper, '__annotations__') else func.__annotations__
 
         def _validate_type(name, value, expected_type):
             """Проверка типов переданных данных"""
