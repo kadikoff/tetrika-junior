@@ -19,15 +19,18 @@ def strict(func):
         bound_args = signature.bind(*args, **kwargs)  # <BoundArguments (a=1, b=2)>
         annotations: dict[str, Type[Any]] = func.__annotations__  # {'a': <class 'int'>, 'b': <class 'int'>, 'return': <class 'int'>}
 
+        def _validate_type(name, value, expected_type):
+            """Проверка типов переданных данных"""
+            if not isinstance(value, expected_type):
+                raise TypeError(
+                    f"Значение '{name} = {value}' должен быть типа '{expected_type.__name__}', "
+                    f"но не '{type(value).__name__}'"
+                )
+
         # Проверка типов переданных аргументов
         for arg_name, arg_value in bound_args.arguments.items():
             expected_type = annotations[arg_name]
-            current_type = type(arg_value)
-            if not isinstance(arg_value, expected_type):
-                raise TypeError(
-                    f"Аргумент '{arg_name} = {arg_value}' должен быть типа '{expected_type.__name__}', "
-                    f"но не '{current_type.__name__}'"
-                )
+            _validate_type(name=arg_name, value=arg_value, expected_type=expected_type)
 
         # Проверка типа возвращаемого значения
         # В задании не было
@@ -35,12 +38,7 @@ def strict(func):
         # принимаем типы данных, указанных на позиции дефолтных значений в функции get.
         result = func(*args, **kwargs)
         expected_return_type = annotations.get("return", Union[bool, int, float, str])
-        current_return_type = type(result)
-        if not isinstance(result, expected_return_type):
-            raise TypeError(
-                f"Возвращаемый результат '{result}' должен быть типа '{expected_return_type.__name__}', "
-                f"но не '{current_return_type.__name__}'"
-            )
+        _validate_type(name="return", value=result, expected_type=expected_return_type)
 
         return result
 
