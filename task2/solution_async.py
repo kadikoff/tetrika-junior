@@ -89,7 +89,7 @@ async def crawl_wikipedia(start_url: str) -> defaultdict[str, int]:
 
 
 async def save_to_csv(
-        data: defaultdict[str, int], filename: str = "animals_2.csv"
+        data: defaultdict[str, int], filename: str
 ) -> None:
     """Сохраняет данные о количестве животных в .csv-файл
     в формате 'Буква, количество' - 'А, 1600'.
@@ -102,19 +102,20 @@ async def save_to_csv(
             writer.writerow([letter, count])
 
 
-async def main():
-    start_url = "https://ru.wikipedia.org/wiki/Категория:Животные_по_алфавиту"
-
+async def main(url: str, filename: str):
     # Подсчёт кол-ва животных по алфавиту
     animals_data = await crawl_wikipedia(start_url)
 
     # Сохранение данных в .csv-файл
-    await save_to_csv(data=animals_data)
+    await save_to_csv(data=animals_data, filename=filename)
 
 
 if __name__ == '__main__':
+    start_url = "https://ru.wikipedia.org/wiki/Категория:Животные_по_алфавиту"
+    filename = "animals_2.csv"
+
     start = datetime.now()
-    asyncio.run(main())
+    asyncio.run(main(start_url, filename))
     end = datetime.now() - start
 
     print("Время выполнения программы: ", end)
