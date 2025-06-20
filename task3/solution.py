@@ -21,6 +21,7 @@ def merge_intervals(pupil: list[int], tutor: list[int]) -> list[int]:
     :return: список интервалов присутствия ученика и учителя
     """
 
+    lesson_start, lesson_end = lesson
     merged_intervals = []
 
     for data in [pupil, tutor]:
@@ -35,6 +36,11 @@ def merge_intervals(pupil: list[int], tutor: list[int]) -> list[int]:
         current_start, current_end = pairs[0]
 
         for start, end in pairs[1:]:
+            # Если кто-то ушёл до начала урока
+            # или присоединился после его окончания - не считаем
+            if end <= lesson_start or start >= lesson_end:
+                continue
+
             if start <= current_end:
                 current_end = max(current_end, end)
             else:
@@ -206,7 +212,10 @@ def appearance(intervals: dict[str, list[int]]) -> int:
     pupil = intervals["pupil"]
     tutor = intervals["tutor"]
 
-    merged_intervals = merge_intervals(pupil, tutor)
+    merged_intervals = merge_intervals(pupil, tutor, lesson)
+    if not merged_intervals:
+        return 0
+
     merged_intervals.sort()
 
     l_r_border_time = get_border_time(merged_intervals, lesson)
