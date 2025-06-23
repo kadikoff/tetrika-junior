@@ -44,7 +44,7 @@
 1. Клонирование репозитория
    
    ```
-   git clone https://github.com/kadikoff/fastapi-twitter-petproject.git
+   git clone https://github.com/kadikoff/tetrika-junior.git
 2. Настройка виртуального окружения
 
     **Для Windows**
